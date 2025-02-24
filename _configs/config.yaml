@@ -1,0 +1,12 @@
+log:
+  level: "INFO"
+server:
+  host: "0.0.0.0"
+  port: "8081"
+stats:
+  load_average: true
+  cpu: true
+  disk_info: true
+  disk_load: true
+  net_stat: true
+  top_talkers: true
