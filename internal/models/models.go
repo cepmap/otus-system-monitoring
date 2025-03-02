@@ -10,19 +10,35 @@ type CPUStat struct {
 	System float64
 	Idle   float64
 }
-type DiskInfo struct {
+type DiskLoad struct {
 	Tps float64
 	Kps float64
 }
-type DiskLoad struct {
-	MUsed float64
-	IUsed float64
-}
+
 type NetStats struct {
-	TUSockets float64
-	TCount    float64
+	Sockets   float64
+	ConnCount float64
 }
 type TopTalkers struct {
-	TUSockets    string
-	TConnections string
+	first  string
+	second string
+	third  string
+}
+
+type DiskStats struct {
+	DiskStats []DiskStat
+}
+
+type DiskStat struct {
+	FileSystem string
+	Usage      DiskUsage
+	Inodes     InodeUsage
+}
+type DiskUsage struct {
+	Used  uint64
+	Usage string
+}
+type InodeUsage struct {
+	Used  uint64
+	Usage string
 }
