@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package stats_service;
+
+option go_package = "./stats_service;stats_service";
+
+
+service StatsService {
+  
+  rpc GetStats(StatsRequest) returns (stream StatsResponse) {}
+}
+
+
+message StatsRequest {
+  int32 interval_n = 1;
+  int32 averaging_period_m = 2;
+  repeated StatType stat_types = 3;
+}
+
+
+enum StatType {
+  LOAD_AVERAGE = 0;
+  CPU_STATS = 1;
+  DISK_LOAD = 2;
+  DISK_USAGE = 3;
+}
+
+
+message StatsResponse {
+  int64 timestamp = 1;
+  LoadAverage load_average = 2;
+  CPUStat cpu_stats = 3;
+  DiskLoad disk_load = 4;
+  DiskStats disk_stats = 5;
+}
+
+
+message LoadAverage {
+  double load1min = 1;
+  double load5min = 2;
+  double load15min = 3;
+}
+
+
+message CPUStat {
+  double user = 1;
+  double system = 2;
+  double idle = 3;
+}
+
+
+message DiskLoad {
+  double tps = 1;
+  double kps = 2;
+}
+
+
+message DiskStats {
+  repeated DiskStat disk_stats = 1;
+}
+
+message DiskStat {
+  string filesystem = 1;
+  DiskUsage usage = 2;
+  InodeUsage inodes = 3;
+}
+
+message DiskUsage {
+  uint64 used = 1;
+  string usage = 2;
+}
+
+message InodeUsage {
+  uint64 used = 1;
+  string usage = 2;
+} 
