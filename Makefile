@@ -8,13 +8,3 @@ build:
 
 run: build
 	$(DAEMON_BIN)
-
-.PHONY: proto
-proto:
-	protoc --plugin=protoc-gen-go=$(shell go env GOPATH)/bin/protoc-gen-go \
-		--plugin=protoc-gen-go-grpc=$(shell go env GOPATH)/bin/protoc-gen-go-grpc \
-		--go_out=api/stats_service \
-		--go_opt=paths=source_relative \
-		--go-grpc_out=api/stats_service \
-		--go-grpc_opt=paths=source_relative \
-		api/stats_service/stats.proto
