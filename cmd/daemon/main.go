@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/diskStat"
+
+	"github.com/cepmap/otus-system-monitoring/internal/stats/disksLoad"
 )
 
 func main() {
-	res, err := diskStat.GetStats()
+	res, err := disksLoad.GetStats()
 	if err != nil {
 		return
 	}

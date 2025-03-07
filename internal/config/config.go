@@ -6,10 +6,12 @@
 package config
 
 import (
+	"strings"
+
 	"github.com/cepmap/otus-system-monitoring/internal/logger"
+	"github.com/cepmap/otus-system-monitoring/internal/tools"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"strings"
 )
 
 type Config struct {
@@ -69,7 +71,7 @@ func init() {
 }
 
 func initSettings() Config {
-	return Config{
+	config := Config{
 		Log: struct {
 			Level string `mapstructure:"level" env:"LOG_LEVEL"`
 		}{Level: "DEBUG"},
@@ -87,4 +89,19 @@ func initSettings() Config {
 			TopTalkers  bool  `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
 		}{LoadAverage: true, Cpu: false, DiskInfo: false, NetStat: false, TopTalkers: false},
 	}
+
+	// Дублирую цикл, потому что в теории команды могут быть разные top, iostat, mpstat и т.д.
+	if config.Stats.Cpu {
+		if err := tools.CheckCommand("iostat"); err != nil {
+			logger.Error("command iostat not found, disabling cpu stats collection")
+			config.Stats.Cpu = false
+		}
+	}
+	if config.Stats.DiskLoad {
+		if err := tools.CheckCommand("iostat"); err != nil {
+			logger.Error("command iostat not found, disabling disk load stats collection")
+			config.Stats.DiskLoad = false
+		}
+	}
+	return config
 }
