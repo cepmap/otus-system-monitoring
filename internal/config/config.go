@@ -21,12 +21,13 @@ type Config struct {
 		Port string `mapstructure:"port" env:"SERVER_PORT"`
 	} `mapstructure:"server"`
 	Stats struct {
-		LoadAverage bool `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
-		Cpu         bool `mapstructure:"cpu" env:"STATS_CPU"`
-		DiskInfo    bool `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
-		DiskLoad    bool `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
-		NetStat     bool `mapstructure:"net_stat" env:"STATS_NET_STAT"`
-		TopTalkers  bool `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
+		Limit       int64 `mapstructure:"limit" env:"STATS_LIMIT"`
+		LoadAverage bool  `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
+		Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
+		DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
+		DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
+		NetStat     bool  `mapstructure:"net_stat" env:"STATS_NET_STAT"`
+		TopTalkers  bool  `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
 	} `mapstructure:"stats"`
 }
 
@@ -77,12 +78,13 @@ func initSettings() Config {
 			Port string `mapstructure:"port" env:"SERVER_PORT"`
 		}{Host: "0.0.0.0", Port: "8080"},
 		Stats: struct {
-			LoadAverage bool `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
-			Cpu         bool `mapstructure:"cpu" env:"STATS_CPU"`
-			DiskInfo    bool `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
-			DiskLoad    bool `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
-			NetStat     bool `mapstructure:"net_stat" env:"STATS_NET_STAT"`
-			TopTalkers  bool `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
+			Limit       int64 `mapstructure:"limit" env:"STATS_LIMIT"`
+			LoadAverage bool  `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
+			Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
+			DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
+			DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
+			NetStat     bool  `mapstructure:"net_stat" env:"STATS_NET_STAT"`
+			TopTalkers  bool  `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
 		}{LoadAverage: true, Cpu: false, DiskInfo: false, NetStat: false, TopTalkers: false},
 	}
 }

@@ -4,6 +4,7 @@ server:
   host: "0.0.0.0"
   port: "8081"
 stats:
+  limit: 500
   load_average: true
   cpu: true
   disk_info: true
