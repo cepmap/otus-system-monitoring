@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 
+	"github.com/cepmap/otus-system-monitoring/internal/stats/cpu"
+	"github.com/cepmap/otus-system-monitoring/internal/stats/diskStat"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/disksLoad"
+	"github.com/cepmap/otus-system-monitoring/internal/stats/loadAvg"
 )
 
 func main() {
@@ -13,6 +16,24 @@ func main() {
 	}
 
 	fmt.Println(res)
+
+	res1, err := cpu.GetCpuStat()
+	if err != nil {
+		return
+	}
+	fmt.Println(res1)
+
+	res2, err := loadAvg.GetStats()
+	if err != nil {
+		return
+	}
+	fmt.Println(res2)
+
+	res3, err := diskStat.GetStats()
+	if err != nil {
+		return
+	}
+	fmt.Println(res3)
 
 	//ticker := time.NewTicker(1 * time.Second)
 	//defer ticker.Stop() // Ensure the ticker is stopped when done
