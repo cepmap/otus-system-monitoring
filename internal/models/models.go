@@ -19,11 +19,6 @@ type NetStats struct {
 	Sockets   float64
 	ConnCount float64
 }
-type TopTalkers struct {
-	first  string
-	second string
-	third  string
-}
 
 type DiskStats struct {
 	DiskStats []DiskStat
