@@ -11,6 +11,7 @@ import (
 	"github.com/cepmap/otus-system-monitoring/internal/converter"
 	"github.com/cepmap/otus-system-monitoring/internal/logger"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/cpu"
+	"github.com/cepmap/otus-system-monitoring/internal/stats/diskStat"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/disksLoad"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/loadAvg"
 	"google.golang.org/grpc"
@@ -103,7 +104,10 @@ func (s *StatsDaemonServer) GetStats(req *pb.StatsRequest, stream pb.StatsServic
 			if disksLoad, err := disksLoad.GetStats(); err == nil {
 				response.DisksLoad = converter.DisksLoadToProto(disksLoad)
 			}
-
+			if diskStats, err := diskStat.GetStats(); err == nil {
+				response.DiskStats = converter.DiskStatsToProto(diskStats)
+			}
+			logger.Info(fmt.Sprintf("Sending stats to %s: %v", clientAddr, response))
 			if err := stream.Send(response); err != nil {
 				logger.Error(fmt.Sprintf("Failed to send stats to %s: %v", clientAddr, err))
 				return err

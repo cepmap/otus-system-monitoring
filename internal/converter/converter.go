@@ -44,3 +44,27 @@ func DisksLoadToProto(dl *models.DisksLoad) *pb.DisksLoad {
 		DisksLoad: disks,
 	}
 }
+
+func DiskStatsToProto(ds *models.DiskStats) *pb.DiskStats {
+	if ds == nil {
+		return nil
+	}
+
+	diskStats := make([]*pb.DiskStat, len(ds.DiskStats))
+	for i, diskStat := range ds.DiskStats {
+		diskStats[i] = &pb.DiskStat{
+			Filesystem: diskStat.FileSystem,
+			Usage: &pb.DiskUsage{
+				Used:  diskStat.Usage.Used,
+				Usage: diskStat.Usage.Usage,
+			},
+			Inodes: &pb.InodeUsage{
+				Used:  diskStat.Inodes.Used,
+				Usage: diskStat.Inodes.Usage,
+			},
+		}
+	}
+	return &pb.DiskStats{
+		DiskStats: diskStats,
+	}
+}
