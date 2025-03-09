@@ -1,53 +1,38 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"os/signal"
+	"syscall"
 
 	"github.com/cepmap/otus-system-monitoring/internal/config"
 	"github.com/cepmap/otus-system-monitoring/internal/logger"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/cpu"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/diskStat"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/disksLoad"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/loadAvg"
+	"github.com/cepmap/otus-system-monitoring/internal/network/server"
 )
 
 func main() {
+	if err := config.InitConfig(); err != nil {
+		logger.Fatal(err.Error())
+	}
+
 	logger.Info(fmt.Sprintf("Current config: %+v", config.DaemonConfig))
-	res, err := disksLoad.GetStats()
-	if err != nil {
-		return
-	}
 
-	fmt.Println(res)
+	ctx, stop := signal.NotifyContext(context.Background(),
+		syscall.SIGHUP,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT)
+	defer stop()
 
-	res1, err := cpu.GetCpuStat()
-	if err != nil {
-		return
-	}
-	fmt.Println(res1)
+	srv := server.NewStatsDaemonServer(ctx)
 
-	res2, err := loadAvg.GetStats()
-	if err != nil {
-		return
-	}
-	fmt.Println(res2)
+	go func() {
+		if err := srv.Start(); err != nil {
+			logger.Error(fmt.Sprintf("Server error: %v", err))
+		}
+	}()
 
-	res3, err := diskStat.GetStats()
-	if err != nil {
-		return
-	}
-	fmt.Println(res3)
-
-	//ticker := time.NewTicker(1 * time.Second)
-	//defer ticker.Stop() // Ensure the ticker is stopped when done
-	//
-	//// Run a loop that executes a function every second
-	//for range ticker.C {
-	//	// Call your function here
-	//	res, err := diskStat.GetStats()
-	//	if err != nil {
-	//		return
-	//	}
-	//	fmt.Println(res)
-	//}
+	<-ctx.Done()
+	logger.Info("Received shutdown signal")
 }
