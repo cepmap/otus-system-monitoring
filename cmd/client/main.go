@@ -24,12 +24,10 @@ func main() {
 	client := pb.NewStatsServiceClient(conn)
 
 	req := &pb.StatsRequest{
-		IntervalN:        1,
+		IntervalN:        2,
 		AveragingPeriodM: 5,
 		StatTypes: []pb.StatType{
 			pb.StatType_LOAD_AVERAGE,
-			pb.StatType_CPU_STATS,
-			pb.StatType_DISKS_LOAD,
 		},
 	}
 
