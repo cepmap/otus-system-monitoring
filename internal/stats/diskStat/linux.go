@@ -3,10 +3,11 @@
 package diskStat
 
 import (
-	"github.com/cepmap/otus-system-monitoring/internal/models"
-	tools "github.com/cepmap/otus-system-monitoring/internal/tools"
 	"strconv"
 	"strings"
+
+	"github.com/cepmap/otus-system-monitoring/internal/models"
+	tools "github.com/cepmap/otus-system-monitoring/internal/tools"
 )
 
 func parseUint(str string) (uint64, error) {

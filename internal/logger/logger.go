@@ -83,3 +83,7 @@ func Info(msg string) {
 func Debug(msg string) {
 	custLogger.core.Debug(msg)
 }
+
+func Fatal(msg string) {
+	custLogger.core.Fatal(msg)
+}

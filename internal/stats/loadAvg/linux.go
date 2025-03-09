@@ -1,9 +1,10 @@
 package loadAvg
 
 import (
+	"strings"
+
 	"github.com/cepmap/otus-system-monitoring/internal/models"
 	tools "github.com/cepmap/otus-system-monitoring/internal/tools"
-	"strings"
 )
 
 const (

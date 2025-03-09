@@ -6,6 +6,7 @@
 package config
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/cepmap/otus-system-monitoring/internal/logger"
@@ -33,8 +34,7 @@ type Config struct {
 
 var DaemonConfig *Config
 
-func init() {
-
+func InitConfig() error {
 	initSettings := initSettings()
 	DaemonConfig = &initSettings
 
@@ -51,22 +51,25 @@ func init() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read config: %w", err)
 	}
 
 	if err := viper.BindPFlag("log.level", pflag.Lookup("loglevel")); err != nil {
-		logger.Error(err.Error())
+		return fmt.Errorf("failed to bind log level flag: %w", err)
 	}
 	if err := viper.BindPFlag("server.host", pflag.Lookup("host")); err != nil {
-		logger.Error(err.Error())
+		return fmt.Errorf("failed to bind host flag: %w", err)
 	}
 	if err := viper.BindPFlag("server.port", pflag.Lookup("port")); err != nil {
-		logger.Error(err.Error())
+		return fmt.Errorf("failed to bind port flag: %w", err)
 	}
 
 	if err := viper.Unmarshal(DaemonConfig); err != nil {
-		logger.Error(err.Error())
+		return fmt.Errorf("failed to unmarshal config: %w", err)
 	}
+
 	checkCommands(DaemonConfig)
+	return nil
 }
 
 func initSettings() Config {
