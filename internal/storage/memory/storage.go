@@ -3,10 +3,11 @@ package memorystorage
 import (
 	"container/list"
 	"fmt"
-	"github.com/cepmap/otus-system-monitoring/internal/config"
-	"github.com/cepmap/otus-system-monitoring/internal/logger"
 	"sync"
 	"time"
+
+	"github.com/cepmap/otus-system-monitoring/internal/config"
+	"github.com/cepmap/otus-system-monitoring/internal/logger"
 )
 
 type element struct {
@@ -112,4 +113,31 @@ func (ms *MemoryStorage) StoreAt() <-chan interface{} {
 	}()
 
 	return ch
+}
+
+func (ms *MemoryStorage) GetTimestamp(value interface{}) (time.Time, bool) {
+	ms.rwm.RLock()
+	defer ms.rwm.RUnlock()
+
+	for e := ms.list.Front(); e != nil; e = e.Next() {
+		elem := e.Value.(element)
+		if elem.data == value {
+			return elem.timestamp, true
+		}
+	}
+	return time.Time{}, false
+}
+
+func (ms *MemoryStorage) Remove(value interface{}) bool {
+	ms.rwm.Lock()
+	defer ms.rwm.Unlock()
+
+	for e := ms.list.Front(); e != nil; e = e.Next() {
+		elem := e.Value.(element)
+		if elem.data == value {
+			ms.list.Remove(e)
+			return true
+		}
+	}
+	return false
 }

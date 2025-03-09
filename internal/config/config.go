@@ -1,4 +1,3 @@
-// Package config
 /*
 Переопределение переменных осуществляется file -> cmd -> env,
 то есть переменные окружения ENV_* переопределят всё остальное
@@ -93,7 +92,7 @@ func initSettings() Config {
 }
 
 func checkCommands(config *Config) {
-	// Дублирую цикл, потому что в теории команды могут быть разные top, iostat, mpstat и т.д.
+
 	if config.Stats.Cpu {
 		if err := tools.CheckCommand("iostat"); err != nil {
 			logger.Error("command iostat not found, disabling cpu stats collection")
