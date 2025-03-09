@@ -58,7 +58,6 @@ func TestServer(t *testing.T) {
 	})
 
 	t.Run("get stats", func(t *testing.T) {
-
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 

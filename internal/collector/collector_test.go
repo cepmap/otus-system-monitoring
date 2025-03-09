@@ -11,7 +11,6 @@ import (
 )
 
 func TestCollector(t *testing.T) {
-
 	config.DaemonConfig = &config.Config{}
 	config.DaemonConfig.Stats.LoadAverage = true
 	config.DaemonConfig.Stats.Cpu = true

@@ -14,7 +14,6 @@ import (
 )
 
 func TestMetricsIntegration(t *testing.T) {
-
 	config.DaemonConfig = &config.Config{}
 	config.DaemonConfig.Stats.LoadAverage = true
 	config.DaemonConfig.Stats.Cpu = true
@@ -22,7 +21,6 @@ func TestMetricsIntegration(t *testing.T) {
 	config.DaemonConfig.Stats.DiskLoad = true
 
 	t.Run("full metrics pipeline", func(t *testing.T) {
-
 		storage := metrics.New()
 		require.NotNil(t, storage)
 
@@ -108,7 +106,6 @@ func TestMetricsIntegration(t *testing.T) {
 	})
 
 	t.Run("metrics pipeline with partial data", func(t *testing.T) {
-
 		storage := metrics.New()
 		require.NotNil(t, storage)
 
@@ -142,7 +139,6 @@ func TestMetricsIntegration(t *testing.T) {
 	})
 
 	t.Run("metrics pipeline with averaging", func(t *testing.T) {
-
 		storage := metrics.New()
 		require.NotNil(t, storage)
 

@@ -15,7 +15,6 @@ func TestLogger(t *testing.T) {
 		shouldPrint  bool
 	}
 	testCases := []testCase{
-
 		{
 			loggerLevel:  DebugLevel,
 			messageLevel: DebugLevel,
