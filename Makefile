@@ -30,3 +30,5 @@ unit-tests:
 
 integration-tests:
 	go test  -count 1 ./tests/integration/... -v
+
+tests: unit-tests integration-tests
