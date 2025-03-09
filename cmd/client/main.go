@@ -28,6 +28,9 @@ func main() {
 		AveragingPeriodM: 5,
 		StatTypes: []pb.StatType{
 			pb.StatType_LOAD_AVERAGE,
+			pb.StatType_CPU_STATS,
+			pb.StatType_DISKS_LOAD,
+			pb.StatType_DISK_USAGE,
 		},
 	}
 

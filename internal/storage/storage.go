@@ -8,8 +8,10 @@ import (
 var ErrEpmtyStorage = errors.New("empty storage")
 
 type Storage interface {
-	Push(interface{}, time.Time)
-	GetElementsAt(time.Time) <-chan interface{}
+	Push(item interface{}, timestamp time.Time)
+	GetElementsAt(from time.Time) <-chan interface{}
+	GetTimestamp(item interface{}) (time.Time, bool)
+	Remove(item interface{}) bool
 	GetElements(int64) <-chan interface{}
 	StoreAt() <-chan interface{}
 	Show()
