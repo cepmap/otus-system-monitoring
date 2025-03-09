@@ -4,7 +4,6 @@ import (
 	"context"
 	"net"
 	"testing"
-	"time"
 
 	pb "github.com/cepmap/otus-system-monitoring/internal/api/stats_service"
 	"github.com/cepmap/otus-system-monitoring/internal/config"
@@ -27,9 +26,39 @@ func initConfig() {
 	config.DaemonConfig.Stats.DiskLoad = true
 }
 
+func setupTestServer(ctx context.Context, t *testing.T) (pb.StatsServiceClient, func()) {
+	lis := bufconn.Listen(bufSize)
+	srv := NewStatsDaemonServer(ctx)
+
+	go func() {
+		if err := srv.grpcServer.Serve(lis); err != nil {
+
+			if err.Error() != "closed" {
+				t.Errorf("server error: %v", err)
+			}
+		}
+	}()
+
+	opts := []grpc.DialOption{
+		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
+			return lis.Dial()
+		}),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	}
+
+	conn, err := grpc.NewClient("passthrough://bufnet", opts...)
+	require.NoError(t, err)
+
+	cleanup := func() {
+		conn.Close()
+		srv.Stop()
+	}
+
+	return pb.NewStatsServiceClient(conn), cleanup
+}
+
 func TestServer(t *testing.T) {
 	t.Parallel()
-
 	initConfig()
 
 	t.Run("create server", func(t *testing.T) {
@@ -47,42 +76,27 @@ func TestServer(t *testing.T) {
 		srv := NewStatsDaemonServer(ctx)
 		require.NotNil(t, srv)
 
+		errCh := make(chan error, 1)
 		go func() {
-			err := srv.Start()
-			require.NoError(t, err)
+			errCh <- srv.Start()
 		}()
 
-		time.Sleep(100 * time.Millisecond)
+		select {
+		case err := <-errCh:
+			require.NoError(t, err)
+		default:
+
+		}
 
 		srv.Stop()
 	})
 
 	t.Run("get stats", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		lis := bufconn.Listen(bufSize)
-		srv := NewStatsDaemonServer(ctx)
-
-		go func() {
-			err := srv.grpcServer.Serve(lis)
-			require.NoError(t, err)
-		}()
-
-		time.Sleep(2 * time.Second)
-
-		opts := []grpc.DialOption{
-			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-				return lis.Dial()
-			}),
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-		}
-
-		conn, err := grpc.NewClient("localhost:8088", opts...)
-		require.NoError(t, err)
-		defer conn.Close()
-
-		client := pb.NewStatsServiceClient(conn)
+		client, cleanup := setupTestServer(ctx, t)
+		defer cleanup()
 
 		stream, err := client.GetStats(ctx, &pb.StatsRequest{
 			IntervalN:        1,
@@ -116,7 +130,5 @@ func TestServer(t *testing.T) {
 
 		err = stream.CloseSend()
 		require.NoError(t, err)
-
-		srv.Stop()
 	})
 }
