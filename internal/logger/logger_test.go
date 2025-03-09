@@ -15,7 +15,7 @@ func TestLogger(t *testing.T) {
 		shouldPrint  bool
 	}
 	testCases := []testCase{
-		// Debug
+
 		{
 			loggerLevel:  DebugLevel,
 			messageLevel: DebugLevel,
@@ -36,7 +36,7 @@ func TestLogger(t *testing.T) {
 			messageLevel: ErrorLevel,
 			shouldPrint:  true,
 		},
-		// Info
+
 		{
 			loggerLevel:  InfoLevel,
 			messageLevel: DebugLevel,
@@ -57,7 +57,7 @@ func TestLogger(t *testing.T) {
 			messageLevel: ErrorLevel,
 			shouldPrint:  true,
 		},
-		// Warning
+
 		{
 			loggerLevel:  WarnLevel,
 			messageLevel: DebugLevel,
@@ -78,7 +78,7 @@ func TestLogger(t *testing.T) {
 			messageLevel: ErrorLevel,
 			shouldPrint:  true,
 		},
-		// Error
+
 		{
 			loggerLevel:  ErrorLevel,
 			messageLevel: DebugLevel,

@@ -8,3 +8,13 @@ build:
 
 run: build
 	$(DAEMON_BIN)
+
+
+install-lint-deps:
+	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.64.6
+
+lint: install-lint-deps
+	golangci-lint run --timeout=90s ./...
+
+test:
+	go test -race ./internal/... -count 100
