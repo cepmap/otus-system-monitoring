@@ -13,6 +13,12 @@ type iStorage struct {
 	diskInfoStorage storage.Storage
 }
 type Server struct {
-	storage *iStorage
-	ctx     context.Context
+	iStorage *iStorage
+	ctx      context.Context
+}
+
+func NewDaemon(ctx context.Context) *Server {
+	return &Server{
+		ctx: ctx,
+	}
 }
