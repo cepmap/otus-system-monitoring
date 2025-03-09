@@ -72,12 +72,14 @@ func TestServer(t *testing.T) {
 
 		time.Sleep(2 * time.Second)
 
-		conn, err := grpc.DialContext(ctx, "bufnet",
+		opts := []grpc.DialOption{
 			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
 				return lis.Dial()
 			}),
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
-		)
+		}
+
+		conn, err := grpc.NewClient("localhost:8088", opts...)
 		require.NoError(t, err)
 		defer conn.Close()
 
