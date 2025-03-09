@@ -81,6 +81,21 @@ func (s *StatsDaemonServer) GetStats(req *pb.StatsRequest, stream pb.StatsServic
 	logger.Info(fmt.Sprintf("New stats request received from %s: interval=%d, averaging_period=%d, types=%v",
 		clientAddr, req.IntervalN, req.AveragingPeriodM, req.StatTypes))
 
+	if len(req.StatTypes) == 0 {
+		logger.Error("Empty stat types list")
+		return status.Errorf(codes.InvalidArgument, "stat types list cannot be empty")
+	}
+
+	if req.IntervalN < 1 {
+		logger.Error(fmt.Sprintf("Interval %d is less than 1", req.IntervalN))
+		return status.Errorf(codes.InvalidArgument, "interval must be greater than 0")
+	}
+
+	if req.AveragingPeriodM < 1 {
+		logger.Error(fmt.Sprintf("Averaging period %d is less than 1", req.AveragingPeriodM))
+		return status.Errorf(codes.InvalidArgument, "averaging period must be greater than 0")
+	}
+
 	for _, statType := range req.StatTypes {
 		switch statType {
 		case pb.StatType_LOAD_AVERAGE:
@@ -105,14 +120,6 @@ func (s *StatsDaemonServer) GetStats(req *pb.StatsRequest, stream pb.StatsServic
 	if int64(req.AveragingPeriodM) > config.DaemonConfig.Stats.Limit {
 		logger.Error(fmt.Sprintf("Averaging period %d is greater than limit %d", req.AveragingPeriodM, config.DaemonConfig.Stats.Limit))
 		return status.Errorf(codes.InvalidArgument, "averaging period is greater than limit")
-	}
-	if int64(req.AveragingPeriodM) < 1 {
-		logger.Error(fmt.Sprintf("Averaging period %d is less than 1", req.AveragingPeriodM))
-		return status.Errorf(codes.InvalidArgument, "averaging period is less than 1")
-	}
-	if req.IntervalN < 1 {
-		logger.Error(fmt.Sprintf("Interval %d is less than 1", req.IntervalN))
-		return status.Errorf(codes.InvalidArgument, "interval is less than 1")
 	}
 
 	averagingPeriod := time.Duration(req.AveragingPeriodM) * time.Second

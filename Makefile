@@ -16,5 +16,10 @@ install-lint-deps:
 lint: install-lint-deps
 	golangci-lint run --timeout=90s ./...
 
-test:
-	go test ./... -race -count 2
+unit-tests:
+	go test -race -count 100 ./internal/... -v
+
+integration-tests:
+	go test  -count 1 ./tests/integration/... -v
+
+tests: unit-tests integration-tests
