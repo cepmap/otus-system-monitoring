@@ -9,5 +9,3 @@ stats:
   cpu: true
   disk_info: true
   disk_load: true
-  net_stat: true
-  top_talkers: true

@@ -28,8 +28,6 @@ type Config struct {
 		Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
 		DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
 		DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
-		NetStat     bool  `mapstructure:"net_stat" env:"STATS_NET_STAT"`
-		TopTalkers  bool  `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
 	} `mapstructure:"stats"`
 }
 
@@ -68,6 +66,7 @@ func init() {
 	if err := viper.Unmarshal(DaemonConfig); err != nil {
 		logger.Error(err.Error())
 	}
+	checkCommands(DaemonConfig)
 }
 
 func initSettings() Config {
@@ -85,11 +84,12 @@ func initSettings() Config {
 			Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
 			DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
 			DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
-			NetStat     bool  `mapstructure:"net_stat" env:"STATS_NET_STAT"`
-			TopTalkers  bool  `mapstructure:"top_talkers" env:"STATS_TOP_TALKERS"`
-		}{LoadAverage: true, Cpu: false, DiskInfo: false, NetStat: false, TopTalkers: false},
+		}{LoadAverage: true, Cpu: false, DiskInfo: false, DiskLoad: false},
 	}
+	return config
+}
 
+func checkCommands(config *Config) {
 	// Дублирую цикл, потому что в теории команды могут быть разные top, iostat, mpstat и т.д.
 	if config.Stats.Cpu {
 		if err := tools.CheckCommand("iostat"); err != nil {
@@ -103,5 +103,4 @@ func initSettings() Config {
 			config.Stats.DiskLoad = false
 		}
 	}
-	return config
 }

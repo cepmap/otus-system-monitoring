@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/cepmap/otus-system-monitoring/internal/config"
+	"github.com/cepmap/otus-system-monitoring/internal/logger"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/cpu"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/diskStat"
 	"github.com/cepmap/otus-system-monitoring/internal/stats/disksLoad"
@@ -10,6 +12,7 @@ import (
 )
 
 func main() {
+	logger.Info(fmt.Sprintf("Current config: %+v", config.DaemonConfig))
 	res, err := disksLoad.GetStats()
 	if err != nil {
 		return
