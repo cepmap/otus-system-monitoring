@@ -5,11 +5,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cepmap/otus-system-monitoring/internal/config"
 	"github.com/stretchr/testify/require"
 )
 
 func TestStorage(t *testing.T) {
 	t.Parallel()
+
+	config.DaemonConfig = &config.Config{}
+	config.DaemonConfig.Stats.Limit = 1000
+
 	t.Run("change size storage", func(t *testing.T) {
 		ms := New()
 		sizeStart := ms.size

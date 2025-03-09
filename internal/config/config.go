@@ -92,7 +92,6 @@ func initSettings() Config {
 }
 
 func checkCommands(config *Config) {
-
 	if config.Stats.Cpu {
 		if err := tools.CheckCommand("iostat"); err != nil {
 			logger.Error("command iostat not found, disabling cpu stats collection")
