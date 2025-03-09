@@ -12,9 +12,14 @@ type CPUStat struct {
 	Idle   float64 `protobuf:"fixed64,3,opt,name=idle,proto3" json:"idle"`
 }
 
+type DisksLoad struct {
+	DisksLoad []DiskLoad `protobuf:"bytes,1,rep,name=disks_load,proto3" json:"disks_load"`
+}
+
 type DiskLoad struct {
-	Tps float64 `protobuf:"fixed64,1,opt,name=tps,proto3" json:"tps"`
-	Kps float64 `protobuf:"fixed64,2,opt,name=kps,proto3" json:"kps"`
+	FSName string  `protobuf:"bytes,1,opt,name=fs_name,proto3" json:"fs_name"`
+	Tps    float64 `protobuf:"fixed64,1,opt,name=tps,proto3" json:"tps"`
+	Kps    float64 `protobuf:"fixed64,2,opt,name=kps,proto3" json:"kps"`
 }
 
 type DiskStats struct {

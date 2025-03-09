@@ -1,15 +1,17 @@
-package float
+package tools
 
 import (
-	"fmt"
 	"os/exec"
+	"strings"
 )
+
+var ExecCommand = Exec
 
 func Exec(command string, args []string) (string, error) {
 	cmd := exec.Command(command, args...)
-	stdout, err := cmd.CombinedOutput()
+	output, err := cmd.Output()
 	if err != nil {
-		return "", fmt.Errorf("failed to exec %s with error: %w", cmd.String(), err)
+		return "", err
 	}
-	return string(stdout), nil
+	return strings.TrimSpace(string(output)), nil
 }

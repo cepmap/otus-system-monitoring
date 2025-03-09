@@ -21,7 +21,7 @@ message StatsRequest {
 enum StatType {
   LOAD_AVERAGE = 0;
   CPU_STATS = 1;
-  DISK_LOAD = 2;
+  DISKS_LOAD = 2;
   DISK_USAGE = 3;
 }
 
@@ -30,7 +30,7 @@ message StatsResponse {
   int64 timestamp = 1;
   LoadAverage load_average = 2;
   CPUStat cpu_stats = 3;
-  DiskLoad disk_load = 4;
+  DisksLoad disks_load = 4;
   DiskStats disk_stats = 5;
 }
 
@@ -49,9 +49,15 @@ message CPUStat {
 }
 
 
+message DisksLoad {
+  repeated DiskLoad disks_load = 1;
+}
+
+
 message DiskLoad {
-  double tps = 1;
-  double kps = 2;
+  string fs_name = 1;
+  double tps = 2;
+  double kps = 3;
 }
 
 
