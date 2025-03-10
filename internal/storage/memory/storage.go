@@ -8,6 +8,7 @@ import (
 
 	"github.com/cepmap/otus-system-monitoring/internal/config"
 	"github.com/cepmap/otus-system-monitoring/internal/logger"
+	"github.com/cepmap/otus-system-monitoring/internal/storage"
 )
 
 type element struct {
@@ -141,3 +142,21 @@ func (ms *MemoryStorage) Remove(value interface{}) bool {
 	}
 	return false
 }
+
+func (ms *MemoryStorage) Clean(t time.Time) {
+	ms.rwm.Lock()
+	defer ms.rwm.Unlock()
+
+	for e := ms.list.Back(); e != nil; {
+		elem := e.Value.(element)
+		if t.After(elem.timestamp) {
+			next := e.Prev()
+			ms.list.Remove(e)
+			e = next
+		} else {
+			e = e.Prev()
+		}
+	}
+}
+
+var _ storage.Storage = (*MemoryStorage)(nil)

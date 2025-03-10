@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"sync"
 	"time"
 
 	"github.com/cepmap/otus-system-monitoring/internal/models"
@@ -8,15 +9,16 @@ import (
 	memorystorage "github.com/cepmap/otus-system-monitoring/internal/storage/memory"
 )
 
-type MetricsStorage struct {
+type Storage struct {
+	mu        sync.RWMutex
 	loadAvg   storage.Storage
 	cpuStats  storage.Storage
 	diskLoad  storage.Storage
 	diskUsage storage.Storage
 }
 
-func New() *MetricsStorage {
-	return &MetricsStorage{
+func New() *Storage {
+	return &Storage{
 		loadAvg:   memorystorage.New(),
 		cpuStats:  memorystorage.New(),
 		diskLoad:  memorystorage.New(),
@@ -24,19 +26,27 @@ func New() *MetricsStorage {
 	}
 }
 
-func (m *MetricsStorage) StoreLoadAverage(stats *models.LoadAverage, timestamp time.Time) {
+func (m *Storage) StoreLoadAverage(stats *models.LoadAverage, timestamp time.Time) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	m.loadAvg.Push(stats, timestamp)
 }
 
-func (m *MetricsStorage) StoreCPUStats(stats *models.CPUStat, timestamp time.Time) {
+func (m *Storage) StoreCPUStats(stats *models.CPUStat, timestamp time.Time) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	m.cpuStats.Push(stats, timestamp)
 }
 
-func (m *MetricsStorage) StoreDisksLoad(stats *models.DisksLoad, timestamp time.Time) {
+func (m *Storage) StoreDisksLoad(stats *models.DisksLoad, timestamp time.Time) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	m.diskLoad.Push(stats, timestamp)
 }
 
-func (m *MetricsStorage) StoreDiskUsage(stats *models.DiskStats, timestamp time.Time) {
+func (m *Storage) StoreDiskUsage(stats *models.DiskStats, timestamp time.Time) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	m.diskUsage.Push(stats, timestamp)
 }
 
@@ -53,22 +63,30 @@ func getAverageFromStorage[T any](store storage.Storage, period time.Duration) [
 	return result
 }
 
-func (m *MetricsStorage) GetAverageLoadAverage(period time.Duration) *models.LoadAverage {
+func (m *Storage) GetAverageLoadAverage(period time.Duration) *models.LoadAverage {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
 	stats := getAverageFromStorage[*models.LoadAverage](m.loadAvg, period)
 	return averageLoadAverage(stats)
 }
 
-func (m *MetricsStorage) GetAverageCPUStats(period time.Duration) *models.CPUStat {
+func (m *Storage) GetAverageCPUStats(period time.Duration) *models.CPUStat {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
 	stats := getAverageFromStorage[*models.CPUStat](m.cpuStats, period)
 	return averageCPUStat(stats)
 }
 
-func (m *MetricsStorage) GetAverageDisksLoad(period time.Duration) *models.DisksLoad {
+func (m *Storage) GetAverageDisksLoad(period time.Duration) *models.DisksLoad {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
 	stats := getAverageFromStorage[*models.DisksLoad](m.diskLoad, period)
 	return averageDisksLoad(stats)
 }
 
-func (m *MetricsStorage) GetLatestDiskUsage() *models.DiskStats {
+func (m *Storage) GetLatestDiskUsage() *models.DiskStats {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
 	stats := getAverageFromStorage[*models.DiskStats](m.diskUsage, time.Second)
 	if len(stats) > 0 {
 		return stats[len(stats)-1]

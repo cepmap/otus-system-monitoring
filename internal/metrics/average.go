@@ -76,7 +76,7 @@ func averageDisksLoad(stats []*models.DisksLoad) *models.DisksLoad {
 		}
 	}
 
-	var result []models.DiskLoad
+	result := make([]models.DiskLoad, 0, len(diskSums))
 	for fsName, sums := range diskSums {
 		result = append(result, models.DiskLoad{
 			FSName: fsName,

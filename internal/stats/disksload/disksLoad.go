@@ -1,4 +1,4 @@
-package disksLoad
+package disksload
 
 import (
 	"github.com/cepmap/otus-system-monitoring/internal/models"

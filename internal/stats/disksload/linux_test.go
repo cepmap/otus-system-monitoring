@@ -1,6 +1,6 @@
 //go:build linux
 
-package disksLoad
+package disksload
 
 import (
 	"testing"
@@ -16,6 +16,8 @@ type MockTools struct {
 }
 
 func (m *MockTools) Exec(command string, args []string) (string, error) {
+	_ = command
+	_ = args
 	return `Device            tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd
 sda              1.23    456.78       789.01          0.00     123456     789012          0
 sdb              4.56    789.01       123.45          0.00     456789     123456          0`, nil

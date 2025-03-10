@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//nolint:stylecheck,revive
 type Config struct {
 	Log struct {
 		Level string `mapstructure:"level" env:"LOG_LEVEL"`
@@ -25,7 +26,7 @@ type Config struct {
 	Stats struct {
 		Limit       int64 `mapstructure:"limit" env:"STATS_LIMIT"`
 		LoadAverage bool  `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
-		Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
+		Cpu         bool  `mapstructure:"CPU" env:"STATS_CPU"`
 		DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
 		DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
 	} `mapstructure:"stats"`
@@ -71,6 +72,7 @@ func InitConfig() error {
 	return nil
 }
 
+//nolint:stylecheck,revive
 func initSettings() Config {
 	config := Config{
 		Log: struct {
@@ -83,7 +85,7 @@ func initSettings() Config {
 		Stats: struct {
 			Limit       int64 `mapstructure:"limit" env:"STATS_LIMIT"`
 			LoadAverage bool  `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
-			Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
+			Cpu         bool  `mapstructure:"CPU" env:"STATS_CPU"`
 			DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
 			DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
 		}{LoadAverage: true, Cpu: false, DiskInfo: false, DiskLoad: false},
@@ -92,7 +94,6 @@ func initSettings() Config {
 }
 
 func checkCommands(config *Config) {
-
 	if config.Stats.Cpu {
 		if err := tools.CheckCommand("iostat"); err != nil {
 			logger.Error("command iostat not found, disabling cpu stats collection")

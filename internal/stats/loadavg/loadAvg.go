@@ -1,4 +1,4 @@
-package loadAvg
+package loadavg
 
 import "github.com/cepmap/otus-system-monitoring/internal/models"
 

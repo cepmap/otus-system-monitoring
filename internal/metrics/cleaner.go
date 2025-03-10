@@ -15,11 +15,11 @@ const (
 	defaultRetentionPeriod = 24 * time.Hour
 )
 
-func (m *MetricsStorage) StartCleaner(ctx context.Context) {
+func (m *Storage) StartCleaner(ctx context.Context) {
 	go m.cleanerLoop(ctx)
 }
 
-func (m *MetricsStorage) cleanerLoop(ctx context.Context) {
+func (m *Storage) cleanerLoop(ctx context.Context) {
 	ticker := time.NewTicker(defaultCleanupInterval)
 	defer ticker.Stop()
 
@@ -36,30 +36,29 @@ func (m *MetricsStorage) cleanerLoop(ctx context.Context) {
 	}
 }
 
-func (m *MetricsStorage) cleanOldData() {
+func (m *Storage) cleanOldData() {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	now := time.Now()
 	cutoff := now.Add(-defaultRetentionPeriod)
 
-	storages := []struct {
-		name    string
-		storage storage.Storage
-	}{
-		{"load_average", m.loadAvg},
-		{"cpu_stats", m.cpuStats},
-		{"disk_load", m.diskLoad},
-		{"disk_usage", m.diskUsage},
-	}
+	cleanedCount := 0
+	cleanedCount += m.cleanStorageOldData(m.loadAvg, cutoff)
+	cleanedCount += m.cleanStorageOldData(m.cpuStats, cutoff)
+	cleanedCount += m.cleanStorageOldData(m.diskLoad, cutoff)
+	cleanedCount += m.cleanStorageOldData(m.diskUsage, cutoff)
 
-	for _, s := range storages {
-		count := 0
-		for item := range s.storage.GetElementsAt(time.Time{}) {
-			if ts, ok := s.storage.GetTimestamp(item); ok && ts.Before(cutoff) {
-				s.storage.Remove(item)
-				count++
-			}
-		}
-		if count > 0 {
-			logger.Info(fmt.Sprintf("Cleaned %d old records from %s storage", count, s.name))
+	logger.Info(fmt.Sprintf("Cleaned %d old metrics data before %s", cleanedCount, cutoff.Format(time.RFC3339)))
+}
+
+func (m *Storage) cleanStorageOldData(s storage.Storage, cutoff time.Time) int {
+	count := 0
+	for item := range s.GetElementsAt(time.Time{}) {
+		if ts, ok := s.GetTimestamp(item); ok && ts.Before(cutoff) {
+			s.Remove(item)
+			count++
 		}
 	}
+	return count
 }

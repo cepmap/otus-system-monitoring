@@ -13,17 +13,18 @@ type CPUStat struct {
 }
 
 type DisksLoad struct {
-	DisksLoad []DiskLoad `protobuf:"bytes,1,rep,name=disks_load,proto3" json:"disks_load"`
+	DisksLoad []DiskLoad `protobuf:"bytes,1,rep,name=disks_load,proto3" json:"disksLoad"`
 }
 
 type DiskLoad struct {
+	//nolint:tagliatelle
 	FSName string  `protobuf:"bytes,1,opt,name=fs_name,proto3" json:"fs_name"`
 	Tps    float64 `protobuf:"fixed64,1,opt,name=tps,proto3" json:"tps"`
 	Kps    float64 `protobuf:"fixed64,2,opt,name=kps,proto3" json:"kps"`
 }
 
 type DiskStats struct {
-	DiskStats []DiskStat `protobuf:"bytes,1,rep,name=disk_stats,proto3" json:"disk_stats"`
+	DiskStats []DiskStat `protobuf:"bytes,1,rep,name=disk_stats,proto3" json:"diskStats"`
 }
 
 type DiskStat struct {

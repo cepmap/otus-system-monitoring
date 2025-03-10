@@ -77,6 +77,8 @@ func TestExec(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			commandCreator = func(command string, args ...string) *TestCommand {
+				_ = command
+				_ = args
 				return &TestCommand{
 					Output: tt.output,
 					Err:    tt.error,

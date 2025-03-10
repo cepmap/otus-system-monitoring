@@ -1,6 +1,6 @@
 //go:build linux
 
-package disksLoad
+package disksload
 
 import (
 	"strings"
@@ -10,7 +10,7 @@ import (
 )
 
 func GetDisksLoad() (*models.DisksLoad, error) {
-	var disksLoad []models.DiskLoad
+	disksLoad := make([]models.DiskLoad, 0, 4)
 
 	res, err := tools.ExecCommand("iostat", []string{""})
 	if err != nil {
