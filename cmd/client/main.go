@@ -6,9 +6,11 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/cepmap/otus-system-monitoring/internal/api/stats_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	pb "github.com/cepmap/otus-system-monitoring/internal/api/stats_service"
+	"github.com/cepmap/otus-system-monitoring/internal/logger"
 )
 
 func main() {
@@ -17,15 +19,15 @@ func main() {
 
 	conn, err := grpc.NewClient("localhost:8088", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("Failed to connect: %v", err)
+		logger.Error(fmt.Sprintf("Failed to connect: %v", err))
 	}
 	defer conn.Close()
 
 	client := pb.NewStatsServiceClient(conn)
 
 	req := &pb.StatsRequest{
-		IntervalN:        2,
-		AveragingPeriodM: 5,
+		IntervalN:        1,
+		AveragingPeriodM: 2,
 		StatTypes: []pb.StatType{
 			pb.StatType_LOAD_AVERAGE,
 			pb.StatType_CPU_STATS,
@@ -36,7 +38,7 @@ func main() {
 
 	stream, err := client.GetStats(ctx, req)
 	if err != nil {
-		log.Fatalf("Failed to get stats: %v", err)
+		logger.Error(fmt.Sprintf("Failed to get stats: %v", err))
 	}
 
 	ticker := time.NewTicker(time.Second)

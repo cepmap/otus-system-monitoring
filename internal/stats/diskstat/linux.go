@@ -1,8 +1,9 @@
 //go:build linux
 
-package diskStat
+package diskstat
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -19,19 +20,24 @@ func parseUint(str string) (uint64, error) {
 }
 
 func GetDiskStats() (*models.DiskStats, error) {
-	var output []models.DiskStat
-
 	dfOut, err := getDiskInfo()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting disk info: %w", err)
 	}
+
+	lines := strings.Split(strings.TrimSpace(dfOut), "\n")
+	if len(lines) < 2 {
+		return nil, fmt.Errorf("unexpected df output format: too few lines")
+	}
+	devices := lines[1:]
+	output := make([]models.DiskStat, 0, len(devices))
 
 	dfInodeOut, err := getDiskInodeInfo()
 	if err != nil {
 		return nil, err
 	}
 
-	for i, disk := range dfOut {
+	for i, disk := range devices {
 		diskArr := strings.Fields(disk)
 		diskInodeArr := strings.Fields(dfInodeOut[i])
 
@@ -66,18 +72,28 @@ func GetDiskStats() (*models.DiskStats, error) {
 	return &models.DiskStats{DiskStats: output}, nil
 }
 
-func getDiskInfo() ([]string, error) {
-	result, err := tools.Exec("df", []string{"-T", "-k", "--exclude-type=tmpfs", "--exclude-type=devtmpfs", "--exclude-type=udev"})
+func getDiskInfo() (string, error) {
+	result, err := tools.Exec("df", []string{
+		"-T", "-k", "--exclude-type=tmpfs",
+		"--exclude-type=devtmpfs", "--exclude-type=udev",
+	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return strings.Split(result, "\n")[1:], nil
+	return result, nil
 }
 
 func getDiskInodeInfo() ([]string, error) {
-	result, err := tools.Exec("df", []string{"-T", "-k", "-i", "--exclude-type=tmpfs", "--exclude-type=devtmpfs", "--exclude-type=udev"})
+	result, err := tools.Exec("df", []string{
+		"-T", "-k", "-i", "--exclude-type=tmpfs",
+		"--exclude-type=devtmpfs", "--exclude-type=udev",
+	})
 	if err != nil {
 		return nil, err
 	}
-	return strings.Split(result, "\n")[1:], nil
+	lines := strings.Split(result, "\n")
+	if len(lines) < 2 {
+		return nil, fmt.Errorf("unexpected df output format: too few lines")
+	}
+	return lines[1:], nil
 }

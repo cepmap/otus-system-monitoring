@@ -72,7 +72,6 @@ func TestStorage(t *testing.T) {
 		wg.Add(10)
 
 		for w := 0; w < 10; w++ {
-			w := w
 			go func() {
 				defer wg.Done()
 				for i := 0; i < 50; i++ {

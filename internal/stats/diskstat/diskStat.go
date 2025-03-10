@@ -1,4 +1,4 @@
-package diskStat
+package diskstat
 
 import (
 	"github.com/cepmap/otus-system-monitoring/internal/models"

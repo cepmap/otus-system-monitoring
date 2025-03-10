@@ -25,7 +25,7 @@ type Config struct {
 	Stats struct {
 		Limit       int64 `mapstructure:"limit" env:"STATS_LIMIT"`
 		LoadAverage bool  `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
-		Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
+		Cpu         bool  `mapstructure:"CPU" env:"STATS_CPU"`
 		DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
 		DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
 	} `mapstructure:"stats"`
@@ -83,7 +83,7 @@ func initSettings() Config {
 		Stats: struct {
 			Limit       int64 `mapstructure:"limit" env:"STATS_LIMIT"`
 			LoadAverage bool  `mapstructure:"load_average" env:"STATS_LOAD_AVERAGE"`
-			Cpu         bool  `mapstructure:"cpu" env:"STATS_CPU"`
+			Cpu         bool  `mapstructure:"CPU" env:"STATS_CPU"`
 			DiskInfo    bool  `mapstructure:"disk_info" env:"STATS_DISK_INFO"`
 			DiskLoad    bool  `mapstructure:"disk_load" env:"STATS_DISK_LOAD"`
 		}{LoadAverage: true, Cpu: false, DiskInfo: false, DiskLoad: false},

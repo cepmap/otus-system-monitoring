@@ -20,7 +20,7 @@ import (
 type StatsDaemonServer struct {
 	ctx        context.Context
 	grpcServer *grpc.Server
-	metrics    *metrics.MetricsStorage
+	metrics    *metrics.Storage
 	pb.UnimplementedStatsServiceServer
 }
 
@@ -41,7 +41,7 @@ func (s *StatsDaemonServer) Start() error {
 	addr := net.JoinHostPort(config.DaemonConfig.Server.Host, config.DaemonConfig.Server.Port)
 	lis, err := net.Listen("tcp4", addr)
 	if err != nil {
-		return fmt.Errorf("failed to listen: %v", err)
+		return fmt.Errorf("failed to listen: %w", err)
 	}
 
 	logger.Info(fmt.Sprintf("Starting stats daemon server on %s (IPv4 only)", addr))
@@ -53,7 +53,7 @@ func (s *StatsDaemonServer) Start() error {
 	}()
 	logger.Info("Server started. Press Ctrl+C to stop")
 	if err := s.grpcServer.Serve(lis); err != nil {
-		return fmt.Errorf("failed to serve: %v", err)
+		return fmt.Errorf("failed to serve: %w", err)
 	}
 
 	return nil
@@ -118,7 +118,8 @@ func (s *StatsDaemonServer) GetStats(req *pb.StatsRequest, stream pb.StatsServic
 	}
 
 	if int64(req.AveragingPeriodM) > config.DaemonConfig.Stats.Limit {
-		logger.Error(fmt.Sprintf("Averaging period %d is greater than limit %d", req.AveragingPeriodM, config.DaemonConfig.Stats.Limit))
+		logger.Error(fmt.Sprintf("Averaging period %d is greater than limit %d",
+			req.AveragingPeriodM, config.DaemonConfig.Stats.Limit))
 		return status.Errorf(codes.InvalidArgument, "averaging period is greater than limit")
 	}
 

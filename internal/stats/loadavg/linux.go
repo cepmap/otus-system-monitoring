@@ -1,4 +1,4 @@
-package loadAvg
+package loadavg
 
 import (
 	"strings"

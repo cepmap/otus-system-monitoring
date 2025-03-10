@@ -1,6 +1,6 @@
 //go:build linux
 
-package diskStat
+package diskstat
 
 import (
 	"strings"
@@ -53,8 +53,7 @@ func TestGetDiskInfo(t *testing.T) {
 		info, err := getDiskInfo()
 		require.NoError(t, err)
 		require.NotEmpty(t, info)
-
-		for _, line := range info {
+		for _, line := range strings.Split(info, "\n") {
 			fields := strings.Fields(line)
 			require.GreaterOrEqual(t, len(fields), 6, "each line should have at least 6 fields")
 		}

@@ -1,6 +1,6 @@
 //go:build linux
 
-package loadAvg
+package loadavg
 
 import (
 	"testing"

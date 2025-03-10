@@ -13,7 +13,7 @@ type CPUStat struct {
 }
 
 type DisksLoad struct {
-	DisksLoad []DiskLoad `protobuf:"bytes,1,rep,name=disks_load,proto3" json:"disks_load"`
+	DisksLoad []DiskLoad `protobuf:"bytes,1,rep,name=disks_load,proto3" json:"disksLoad"`
 }
 
 type DiskLoad struct {
@@ -23,7 +23,7 @@ type DiskLoad struct {
 }
 
 type DiskStats struct {
-	DiskStats []DiskStat `protobuf:"bytes,1,rep,name=disk_stats,proto3" json:"disk_stats"`
+	DiskStats []DiskStat `protobuf:"bytes,1,rep,name=disk_stats,proto3" json:"diskStats"`
 }
 
 type DiskStat struct {

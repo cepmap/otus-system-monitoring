@@ -141,29 +141,23 @@ func TestMetricsIntegration(t *testing.T) {
 	t.Run("metrics pipeline with averaging", func(t *testing.T) {
 		storage := metrics.New()
 		require.NotNil(t, storage)
-
 		now := time.Now()
 		avgPeriod := 3 * time.Second
-
 		stats1 := &models.CPUStat{User: 10.0, System: 20.0, Idle: 70.0}
 		stats2 := &models.CPUStat{User: 20.0, System: 30.0, Idle: 50.0}
 		stats3 := &models.CPUStat{User: 30.0, System: 40.0, Idle: 30.0}
-
 		storage.StoreCPUStats(stats1, now.Add(-avgPeriod+time.Second))
 		storage.StoreCPUStats(stats2, now.Add(-avgPeriod+2*time.Second))
 		storage.StoreCPUStats(stats3, now)
-
 		statTypes := []pb.StatType{
 			pb.StatType_CPU_STATS,
 		}
 		col := collector.New(storage, statTypes, avgPeriod)
 		require.NotNil(t, col)
-
 		col.CollectMetrics(now)
 		response := col.PrepareResponse()
 		require.NotNil(t, response)
 		require.NotZero(t, response.GetTimestamp())
-
 		avgCPU := response.GetCpuStats()
 		require.NotNil(t, avgCPU)
 		require.InDelta(t, 20.0, avgCPU.User, 20)

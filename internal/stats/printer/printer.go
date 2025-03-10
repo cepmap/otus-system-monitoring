@@ -4,13 +4,13 @@ import (
 	"fmt"
 
 	"github.com/cepmap/otus-system-monitoring/internal/stats/cpu"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/diskStat"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/disksLoad"
-	"github.com/cepmap/otus-system-monitoring/internal/stats/loadAvg"
+	"github.com/cepmap/otus-system-monitoring/internal/stats/disksload"
+	"github.com/cepmap/otus-system-monitoring/internal/stats/diskstat"
+	"github.com/cepmap/otus-system-monitoring/internal/stats/loadavg"
 )
 
 func PrintStats() {
-	res, err := disksLoad.GetStats()
+	res, err := disksload.GetStats()
 	if err != nil {
 		return
 	}
@@ -22,13 +22,13 @@ func PrintStats() {
 	}
 	fmt.Println(res1)
 
-	res2, err := loadAvg.GetStats()
+	res2, err := loadavg.GetStats()
 	if err != nil {
 		return
 	}
 	fmt.Println(res2)
 
-	res3, err := diskStat.GetStats()
+	res3, err := diskstat.GetStats()
 	if err != nil {
 		return
 	}

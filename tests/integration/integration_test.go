@@ -42,6 +42,7 @@ func initConfig() {
 }
 
 func setupServer(t *testing.T) (pb.StatsServiceClient, func()) {
+	t.Helper()
 	initConfig()
 
 	srv := server.NewStatsDaemonServer(context.Background())
@@ -94,6 +95,7 @@ func TestIntegration(t *testing.T) {
 				pb.StatType_DISK_USAGE,
 			},
 			expectedChecks: func(t *testing.T, resp *pb.StatsResponse) {
+				t.Helper()
 				require.NotNil(t, resp)
 				require.NotZero(t, resp.GetTimestamp())
 
@@ -128,6 +130,7 @@ func TestIntegration(t *testing.T) {
 			avgPeriodM: 1,
 			statTypes:  []pb.StatType{pb.StatType_CPU_STATS},
 			expectedChecks: func(t *testing.T, resp *pb.StatsResponse) {
+				t.Helper()
 				require.NotNil(t, resp)
 				require.NotZero(t, resp.GetTimestamp())
 
@@ -147,6 +150,7 @@ func TestIntegration(t *testing.T) {
 			avgPeriodM: 1,
 			statTypes:  []pb.StatType{pb.StatType_CPU_STATS},
 			expectedChecks: func(t *testing.T, resp *pb.StatsResponse) {
+				t.Helper()
 				require.NotNil(t, resp)
 				require.NotZero(t, resp.GetTimestamp())
 				require.NotNil(t, resp.GetCpuStats())
@@ -155,7 +159,6 @@ func TestIntegration(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			client, cleanup := setupServer(t)
 			defer cleanup()
@@ -274,7 +277,6 @@ func TestInvalidRequests(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			stream, err := client.GetStats(ctx, tt.request)
 			require.NoError(t, err)

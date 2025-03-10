@@ -15,11 +15,11 @@ const (
 	defaultRetentionPeriod = 24 * time.Hour
 )
 
-func (m *MetricsStorage) StartCleaner(ctx context.Context) {
+func (m *Storage) StartCleaner(ctx context.Context) {
 	go m.cleanerLoop(ctx)
 }
 
-func (m *MetricsStorage) cleanerLoop(ctx context.Context) {
+func (m *Storage) cleanerLoop(ctx context.Context) {
 	ticker := time.NewTicker(defaultCleanupInterval)
 	defer ticker.Stop()
 
@@ -36,7 +36,7 @@ func (m *MetricsStorage) cleanerLoop(ctx context.Context) {
 	}
 }
 
-func (m *MetricsStorage) cleanOldData() {
+func (m *Storage) cleanOldData() {
 	now := time.Now()
 	cutoff := now.Add(-defaultRetentionPeriod)
 
