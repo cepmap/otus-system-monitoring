@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//nolint:stylecheck,revive
 type Config struct {
 	Log struct {
 		Level string `mapstructure:"level" env:"LOG_LEVEL"`
@@ -71,6 +72,7 @@ func InitConfig() error {
 	return nil
 }
 
+//nolint:stylecheck,revive
 func initSettings() Config {
 	config := Config{
 		Log: struct {

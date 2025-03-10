@@ -15,6 +15,7 @@ const (
 	idlePos   = 19
 )
 
+//nolint:stylecheck,revive
 func GetCpuStat() (*models.CPUStat, error) {
 	res, err := tools.Exec("iostat", []string{"-c"})
 	if err != nil {

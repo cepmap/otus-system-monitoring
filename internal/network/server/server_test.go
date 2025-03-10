@@ -12,7 +12,6 @@ import (
 )
 
 func TestServer(t *testing.T) {
-
 	config.DaemonConfig = &config.Config{}
 	config.DaemonConfig.Server.Host = "localhost"
 	config.DaemonConfig.Server.Port = "0"

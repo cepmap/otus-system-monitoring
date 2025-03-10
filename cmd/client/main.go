@@ -6,11 +6,10 @@ import (
 	"log"
 	"time"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-
 	pb "github.com/cepmap/otus-system-monitoring/internal/api/stats_service"
 	"github.com/cepmap/otus-system-monitoring/internal/logger"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {

@@ -17,6 +17,7 @@ type DisksLoad struct {
 }
 
 type DiskLoad struct {
+	//nolint:tagliatelle
 	FSName string  `protobuf:"bytes,1,opt,name=fs_name,proto3" json:"fs_name"`
 	Tps    float64 `protobuf:"fixed64,1,opt,name=tps,proto3" json:"tps"`
 	Kps    float64 `protobuf:"fixed64,2,opt,name=kps,proto3" json:"kps"`
